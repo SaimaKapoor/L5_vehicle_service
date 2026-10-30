@@ -1,11 +1,10 @@
 import hashlib
 import json
-import subprocess
+import shutil
 from datetime import date
 
 SERVICE_RATES = {"Oil Change": 1500, "Wheel Alignment": 800,
                  "General": 2500,"Brake Check": 1200}
-ADMIN_PASSWORD = "garage-demo"
 service_records = {}
 
 
@@ -36,7 +35,9 @@ def getTotalCost(vehicleNo):
 
 
 def jobCardId(vehicleNo):
-    return hashlib.md5(vehicleNo.encode()).hexdigest()[:8]
+    return hashlib.sha256(
+        vehicleNo.encode("utf-8")
+    ).hexdigest()[:8]
 
 
 def busiestVehicle():
@@ -57,8 +58,8 @@ def loadRecords(fileName="services.json"):
 
 
 def backupRecords(folder):
-    # Helper kept for the lab: not called by the demo
-    subprocess.call("cp services.json " + folder, shell=True)
+    """Copy the service records file to the specified folder."""
+    shutil.copy2("services.json", folder)
 
 
 def main():
